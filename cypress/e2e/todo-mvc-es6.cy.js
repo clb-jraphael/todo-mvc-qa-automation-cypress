@@ -6,37 +6,38 @@ describe('TodoMVC ES6 App - Automated Testing', () => {
     cy.visit('/');
   });
 
-  it('creates multiple todos, toggles them, and shows the completed todos', () => {
+  it('creates multiple todos, marks them as completed, and verifies they appear in the Completed view', () => {
 
     const todos = ['Todo 1', 'Todo 2', 'Todo 3'];
 
+    // 1. create 3 todos
     todos.forEach((todo) => {
       cy.get(selectors.newTodoInput).type(`${todo}{enter}`);
     })
 
-    // assert that the 3 todos are exsiting
+    // 2. Assert that 3 todos exist
     cy.get(selectors.todoItem).should('have.length', 3)
 
-    // toggle the 3 created todos
+    // 3. Toggle each of the created todos
     for (let i = 0; i < todos.length; i++) {
       cy.get(selectors.todoToggle(i + 1)).click()
     }
 
-    // assert that the 3 newly created todos are completed
+    // 4. Assert that all todos are completed
     cy.get(selectors.todoItem).each(($el) => {
       cy.wrap($el).should('have.class', 'completed')
     })
 
-    // show the completed tab
+    // 5. Navigate to the completed tab
     cy.window().then((win) => {
       win.location.hash = '/completed';
     });
 
-    // assert that the toggled todos are showing in the completed tab
+    // 6. Assert that all completed todos are displayed
     cy.get(selectors.todoItem).should('have.length', 3)
   })
 
-  it('creates 2 new todos, edits the first todo, toggles the first todo, and displays the active todos', () => {
+  it('creates two todos, edits the first one, marks it as completed, and verifies only the active todo remains', () => {
 
     // 1. Create 2 todos
     const todos = ['Todo 1', 'Todo 2']
@@ -46,10 +47,6 @@ describe('TodoMVC ES6 App - Automated Testing', () => {
     })
 
     // 2. Edit the first todo
-    //   - double-click the first todo label (Cypress has .dblclick)
-    //   - clear and type a new value into the input (then press enter)
-    //   - assert the first todo text has changed
-
     cy.get(`${selectors.todoItem} label`).first().dblclick();
     cy.get(selectors.editInput)
       .clear()
@@ -59,22 +56,56 @@ describe('TodoMVC ES6 App - Automated Testing', () => {
       .first()
       .should('contain.text', 'Todo 1 updated')
 
-    // 3. Toggle the first todo
-    //   - click the toggle of the first todo
-    //   - assert it has the class 'completed'
+    // 3. Toggle the first todo as completed
+    cy.get(selectors.todoToggle(1)).click()
 
     // 4. Show only active todos
-    //   - navigate to active todos (either click the filter button OR use win.location.hash = '/active')
+    cy.window().then((win) => {
+      win.location.hash = '/active';
+    });
 
     // 5. Assert only the 2nd todo shows in the list
-    //   - should('have.length', 1)
-    //   - and should('contain.text', 'Todo 2')
-
-
-
-
-
-    
+    cy.get(selectors.todoItem).should('have.length', 1)
   })
 
+  it('creates three todos, deletes the first, toggles the next, and verifies filtering and toggle-all functionality', () => {
+    const todos = ['Todo 1', 'Todo 2', 'Todo 3'];
+
+    // 1. Create 3 todos
+    todos.forEach((todo) => {
+      cy.get(selectors.newTodoInput).type(`${todo}{enter}`);
+    });
+
+    // 2. Assert that 2 todos exist
+    cy.get(selectors.todoItem).should('have.length', 3);
+
+    // 3. Delete the first todo
+    cy.get(selectors.todoItem).first().trigger('mouseover').find('button.destroy').click({force: true});
+
+    // 4. Assert that only 2 todos remain
+    cy.get(selectors.todoItem).should('have.length', 2);
+
+    // 5. Toggle the new first todo
+    cy.get(selectors.todoToggle(1)).click();
+    cy.get(selectors.todoItem).first().should('have.class', 'completed');
+
+    // 6. Navigate to Completed tab using hash
+    cy.window().then((win) => {
+      win.location.hash = '/completed';
+    });
+    cy.get(selectors.todoItem).should('have.length', 1);
+
+    // 7. Navigate back to All tab
+    cy.window().then((win) => {
+      win.location.hash = '/';
+    });
+
+    // 8. Toggle all todos using the label
+    cy.get('label[for="toggle-all"]').click();
+
+    // 9. Assert that all todos are completed
+    cy.get(selectors.todoItem).each(($el) => {
+      cy.wrap($el).should('have.class', 'completed');
+    });
+  })
 });
