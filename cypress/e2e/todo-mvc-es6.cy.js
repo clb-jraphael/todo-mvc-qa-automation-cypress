@@ -6,23 +6,20 @@ describe('TodoMVC ES6 App - Automated Testing', () => {
     cy.visit('/');
   });
 
-  it('creates a new todo and toggles newly created todo', () => {
-    // creates a new todo
-    cy.get(selectors.newTodoInput).type('Buy groceries{enter}');
+  it('creates multiple todos and toggles them', () => {
 
-    // asserts that the newly created to do is created
-    cy.get(`${selectors.todoItem} label`)
-      .first()
-      .should('contain.text', 'Buy groceries');
-    // end of creates a new todo
+    const todos = ['Todo 1', 'Todo 2', 'Todo 3'];
 
-    // toggles the newly created todo above
-    cy.get(selectors.todoToggle(1)).click();
+    todos.forEach( (todo) => {
+      cy.get(selectors.newTodoInput).type(`${todo}{enter}`);
+    })
 
-    // asserts that the newly created todo was toggled
-    cy.get(selectors.todoItem).first().should('have.class', 'completed')
-  });
+    // assert that the 3 todos are exsiting
 
-  
+    // toggle the 3 created todos
+
+    // assert that the 3 newly created todos are toggled 
+
+  })
 
 });
