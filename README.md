@@ -3,10 +3,7 @@
 This project contains automated end-to-end tests for the **TodoMVC ES6** application using [Cypress](https://www.cypress.io/).  
 It covers the core functionality of the TodoMVC app — creating todos, editing, deleting, toggling, filtering, and using the **toggle all** feature.
 
-## 🎥 Demo
-
-Here’s a quick demonstration of the Cypress tests running against the TodoMVC ES6 app:
-
+## 
 ![TodoMVC Cypress Demo](assets/todo-mvc-demo.gif)  
 
 ---  
