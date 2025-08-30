@@ -24,7 +24,7 @@ describe('TodoMVC ES6 App - Automated Testing', () => {
 
 
   // -- TOGGLE A TODO
-  it.only('Toggles a to do', () => {
+  it('Toggles a to do', () => {
 
     const todos = ['Todo 1', 'Todo 2', 'Todo 3']
 
@@ -164,7 +164,7 @@ describe('TodoMVC ES6 App - Automated Testing', () => {
 
 
 
-  it('creates multiple todos, marks them as completed, and verifies they appear in the Completed view', () => {
+  it('Creates multiple todos, marks them as completed, and verifies they appear in the Completed view', () => {
 
     const todos = ['Todo 1', 'Todo 2', 'Todo 3'];
 
@@ -195,7 +195,7 @@ describe('TodoMVC ES6 App - Automated Testing', () => {
     cy.get(selectors.todoItem).should('have.length', 3)
   })
 
-  it('creates two todos, edits the first one, marks it as completed, and verifies only the active todo remains', () => {
+  it('Creates two todos, edits the first one, marks it as completed, and verifies only the active todo remains', () => {
 
     // 1. Create 2 todos
     const todos = ['Todo 1', 'Todo 2']
@@ -226,7 +226,7 @@ describe('TodoMVC ES6 App - Automated Testing', () => {
     cy.get(selectors.todoItem).should('have.length', 1)
   })
 
-  it('creates three todos, deletes the first, toggles the next, and verifies filtering and toggle-all functionality', () => {
+  it('Creates three todos, deletes the first, toggles the next, and verifies filtering and toggle-all functionality', () => {
     const todos = ['Todo 1', 'Todo 2', 'Todo 3'];
 
     // 1. Create 3 todos
