@@ -6,6 +6,8 @@ describe('TodoMVC ES6 App - Automated Testing', () => {
     cy.visit('/');
   });
 
+
+
   // -- CREATE TODOS --
   it('Creates new todos', () => {
 
@@ -17,6 +19,37 @@ describe('TodoMVC ES6 App - Automated Testing', () => {
 
     // -- ASSERTS NEW TODOS ARE CREATED --
     cy.get(selectors.todoItem).should('have.length', 3)
+  })
+
+
+
+  // -- TOGGLE A TODO
+  it.only('Toggles a to do', () => {
+
+    const todos = ['Todo 1', 'Todo 2', 'Todo 3']
+
+    todos.forEach((todo) => {
+      cy.get(selectors.newTodoInput).type(`${todo}{enter}`)
+    })
+
+    // -- ASSERTS NEW TODOS ARE CREATED --
+    cy.get(selectors.todoItem).should('have.length', 3)
+
+    // -- TOGGLES A TODO -- 
+    cy.get(selectors.todoToggle(1)).click()
+
+    // -- ASSERT FIRST TODO TO BE COMPLETED
+    cy.get(selectors.todoItem)
+      .first()
+      .should('have.class', 'completed')
+    
+    // -- TOGGLES BACK THE TODO -- 
+    cy.get(selectors.todoToggle(1)).click()
+
+    // -- ASSERT THE TODO TO BE ACTIVE
+    cy.get(selectors.todoItem)
+      .first()
+      .should('not.have.class', 'active')
   })
 
 
@@ -80,8 +113,10 @@ describe('TodoMVC ES6 App - Automated Testing', () => {
     })
   })
 
+
+
   // -- CHECK IF COMPLETED TABS IS WORKING --
-  it.only('Showing all completed todos', () => {
+  it('Showing completed, active, and all todos', () => {
     const todos = ['Todo 1', 'Todo 2', 'Todo 3', 'Todo 4', 'Todo 5']
 
     todos.forEach((todo) => {
@@ -96,22 +131,38 @@ describe('TodoMVC ES6 App - Automated Testing', () => {
     // -- ASSERT THAT ONLY THE FIRST 3 ARE COMPLETED --
     cy.get(selectors.todoItem).each(($el, index) => {
       if (index < 3) {
-        cy.wrap($el).should('have.class', 'completed')      // first 3 should be completed
+        cy.wrap($el).should('have.class', 'completed')      
       } else {
-        cy.wrap($el).should('not.have.class', 'completed')  // last 2 should not
+        cy.wrap($el).should('not.have.class', 'completed')  
       }
     })
 
     // -- NAVIGATE TO COMPLETED TAB --
-
+    cy.window().then((win) => {
+      win.location.hash = '/completed';
+    });
 
     // -- ASSERT THAT THERE ARE ONLY 3 TODOS COMPLETED -- 
+    cy.get(selectors.todoItem).should('have.length', 3)
 
+    // -- NAVIGATE TO ALL TAB --
+    cy.window().then((win) => {
+      win.location.hash = '/';
+    });
+
+    // -- ASSERT THERE ARE 5 TODOS -- 
+    cy.get(selectors.todoItem).should('have.length', 5)
+
+    // -- NAVIGATE TO ACTIVE TAB --
+    cy.window().then((win) => {
+      win.location.hash = '/active';
+    });
+
+    // -- ASSERT THERE ARE 2 TODOS --
+    cy.get(selectors.todoItem).should('have.length', 2)
   })
 
-  // check if active tabs is working
 
-  // check if all tabs is working
 
   it('creates multiple todos, marks them as completed, and verifies they appear in the Completed view', () => {
 
