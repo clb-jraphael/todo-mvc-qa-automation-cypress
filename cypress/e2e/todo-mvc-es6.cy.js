@@ -6,6 +6,113 @@ describe('TodoMVC ES6 App - Automated Testing', () => {
     cy.visit('/');
   });
 
+  // -- CREATE TODOS --
+  it('Creates new todos', () => {
+
+    const todos = ['Todo 1', 'Todo 2', 'Todo 3']
+
+    todos.forEach((todo) => {
+      cy.get(selectors.newTodoInput).type(`${todo}{enter}`)
+    })
+
+    // -- ASSERTS NEW TODOS ARE CREATED --
+    cy.get(selectors.todoItem).should('have.length', 3)
+  })
+
+
+
+  // -- EDIT TODOS -- 
+  it('Edit todos', () => {
+
+    const todos = ['Todo 1', 'Todo 2', 'Todo 3']
+
+    todos.forEach((todo) => {
+      cy.get(selectors.newTodoInput).type(`${todo}{enter}`)
+    })
+
+    cy.get(`${selectors.todoItem} label`).first().dblclick();
+    cy.get(selectors.editInput)
+      .clear()
+      .type('Ammended 1st todo{enter}')
+
+    // -- ASSERTS 1ST TODO AMMENDED
+    cy.get(`${selectors.todoItem} label`)
+      .first()
+      .should('contain.text', 'Ammended 1st todo')
+  })
+
+
+
+  // -- DELETE TODOS --
+  it('Destroy a todo', () => {
+    const todos = ['Todo 1', 'Todo 2', 'Todo 3']
+
+    todos.forEach((todo) => {
+      cy.get(selectors.newTodoInput).type(`${todo}{enter}`)
+    })
+
+    cy.get(selectors.todoItem)
+      .first()
+      .trigger('mouseover')
+      .find('button.destroy')
+      .click({ force: true });
+
+    // -- ASSERTS THAT 1ST TODO IS DESTROYED
+    cy.get(selectors.todoItem).should('have.length', 2);
+  })
+
+
+
+  // -- MARK ALL AS DONE --
+  it('Mark all todos as done', () => {
+    const todos = ['Todo 1', 'Todo 2', 'Todo 3']
+
+    todos.forEach((todo) => {
+      cy.get(selectors.newTodoInput).type(`${todo}{enter}`)
+    })
+
+    cy.get(selectors.toggleAll).click({ force: true })
+
+    // -- ASSERTS ALL TODOS ARE COMPLETED -- 
+    // Optional: assert that all todos are marked done
+    cy.get(selectors.todoItem).each(($el) => {
+      cy.wrap($el).should('have.class', 'completed')
+    })
+  })
+
+  // -- CHECK IF COMPLETED TABS IS WORKING --
+  it.only('Showing all completed todos', () => {
+    const todos = ['Todo 1', 'Todo 2', 'Todo 3', 'Todo 4', 'Todo 5']
+
+    todos.forEach((todo) => {
+      cy.get(selectors.newTodoInput).type(`${todo}{enter}`)
+    })
+
+    // toggle only the first 3 todos as done
+    for (let i = 1; i <= 3; i++) {
+      cy.get(selectors.todoToggle(i)).click()
+    }
+
+    // -- ASSERT THAT ONLY THE FIRST 3 ARE COMPLETED --
+    cy.get(selectors.todoItem).each(($el, index) => {
+      if (index < 3) {
+        cy.wrap($el).should('have.class', 'completed')      // first 3 should be completed
+      } else {
+        cy.wrap($el).should('not.have.class', 'completed')  // last 2 should not
+      }
+    })
+
+    // -- NAVIGATE TO COMPLETED TAB --
+
+
+    // -- ASSERT THAT THERE ARE ONLY 3 TODOS COMPLETED -- 
+
+  })
+
+  // check if active tabs is working
+
+  // check if all tabs is working
+
   it('creates multiple todos, marks them as completed, and verifies they appear in the Completed view', () => {
 
     const todos = ['Todo 1', 'Todo 2', 'Todo 3'];
@@ -80,7 +187,7 @@ describe('TodoMVC ES6 App - Automated Testing', () => {
     cy.get(selectors.todoItem).should('have.length', 3);
 
     // 3. Delete the first todo
-    cy.get(selectors.todoItem).first().trigger('mouseover').find('button.destroy').click({force: true});
+    cy.get(selectors.todoItem).first().trigger('mouseover').find('button.destroy').click({ force: true });
 
     // 4. Assert that only 2 todos remain
     cy.get(selectors.todoItem).should('have.length', 2);

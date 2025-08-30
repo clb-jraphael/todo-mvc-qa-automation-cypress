@@ -12,11 +12,11 @@ export const selectors = {
   editInput: 'ul.todo-list li.editing .edit',
 
   // Label for the "toggle all" control (clicking this toggles all todos)
-  toggleAllLabel: 'label[for="toggle-all-label"]',
+  toggleAllLabel: 'label[for="toggle-all-label::before"]',
 
   // Delete button for a specific todo (nth-child based on index)
   todoDestroy: (n) => `ul.todo-list li:nth-child(${n}) .destroy`,
 
   // The hidden checkbox used to toggle all todos at once
-  toggleAll: 'input.toggle-all',
+  toggleAll: 'label.toggle-all-label',
 };
