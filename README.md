@@ -7,7 +7,7 @@ It covers the core functionality of the TodoMVC app — creating todos, editing,
 
 Here’s a quick demonstration of the Cypress tests running against the TodoMVC ES6 app:
 
-![TodoMVC Cypress Demo](path/to/your-demo.gif)  
+![TodoMVC Cypress Demo](assets/todo-mvc-demo.gif)  
 
 ---  
 ## 🧪 Test Suite Overview  
